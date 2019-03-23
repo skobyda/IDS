@@ -1,5 +1,4 @@
 --DATE,TIME,PK
---TEST IF THERE IS SOME TABLE
 --pull datas into table
 --creating connections and number them
 --hotovo Zamestnanec, 
@@ -83,6 +82,7 @@ nameCin varchar2(50) not null,
 town varchar2(180) NOT NULL, 
 street varchar2(180),
 zamestn char(11),
+Sala number,
 constraint PK_multikino PRIMARY KEY (nameCin),
 constraint FK_zamestMultikina FOREIGN KEY 
     (zamestn) REFERENCES Zamestnanec
@@ -99,16 +99,16 @@ Constraint PK_zanerFilmu PRIMARY KEY (nazov)
 );
 
 create table Film
-(
-FilmID INT GENERATED AS IDENTITY PRIMARY KEY,
+(FilmID INT GENERATED AS IDENTITY PRIMARY KEY,
+nazovFilmu varchar2(20) NOT NULL,
 rok number(4,0),
 klucslova varchar2(200),
 reziser varchar2(70),
 trvanie number(3,1),
 krajinaPovodu varchar2(50),
 vekoveObmedzenie number(2,0),
-nazovFilmu varchar2(20) NOT NULL, 
 zaner varchar2(20),
+projekciaFilmu number,
 CONSTRAINT FK_Film_zaner FOREIGn KEY
     (zaner) REFERENCES zanerFilmu
 );
@@ -118,13 +118,24 @@ create table Projekcia
 (projekciaID INT GENERATED AS IDENTITY PRIMARY KEY,
 titulky char(1),
 jazyk varchar2(80),
-datum date,d3 char(1)
-);--,casZacatia time - mal by stacit date?
+datum date,
+d3 char(1),
+FilmProjekcia number,
+Constraint FK_film Foreign key
+    (FilmProjekcia) references Film 
+);
+--,casZacatia time - mal by stacit date?
 
 create table PremietaciaSala
 (PremietaciaSalaID INT GENERATED AS IDENTITY PRIMARY KEY,
 kapacita number(4,0),
-projektor varchar2(50)
+projektor varchar2(50),
+SalaProjekcia number,
+multikinoSala varchar2(50),
+constraint FK_SalaProjekcia Foreign key
+    (SalaProjekcia) references Projekcia,
+constraint FK_SalaMultikino Foreign key
+    (multikinoSala) references Multikino    
 );
 
 create table Rezervacia
@@ -164,6 +175,25 @@ ADD constraint FK_nameOfCinema
     Foreign key (Zam) 
     REFERENCES Multikino
     on delete cascade;
+
+alter table zanerFilmu
+ADD constraint FK_zanerFilmuFilm
+    Foreign key (film)
+    REFERENCES Film
+    on delete cascade;
+    
+alter table Film
+ADD constraint FK_Projekcia_Film
+    Foreign key (ProjekciaFilmu)
+    REFERENCES Film
+    on delete cascade;
+
+alter table Multikino
+ADD constraint FK_Multikino_Sala
+    Foreign key (Sala)
+    REFERENCES PremietaciaSala
+    on delete cascade;
+   
 
 /*
 --drop table trzbyFilmu;
