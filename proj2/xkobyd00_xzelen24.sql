@@ -59,7 +59,6 @@ END;
 
 
 
-
 create table Zamestnanec 
 (
 rodne_cislo char(11) primary key not null,
@@ -90,9 +89,11 @@ constraint FK_zamestMultikina FOREIGN KEY
 create table zanerFilmu
 (nazov varchar2(20) NOT NULL, 
 popis varchar2(300),
-film number,
+--film number,
 Constraint PK_zanerFilmu PRIMARY KEY (nazov) 
 );
+
+
 
 create table Film
 (FilmID INT GENERATED AS IDENTITY PRIMARY KEY not null,
@@ -104,11 +105,26 @@ trvanie number(3,1),
 krajinaPovodu varchar2(50),
 vekoveObmedzenie number(2,0) not null,
 FilmZaner varchar2(20),
-FilmProjekcia number,
-CONSTRAINT FK_Film_zaner FOREIGn KEY
-    (FilmZaner) REFERENCES zanerFilmu
+FilmProjekcia number
+/*CONSTRAINT FK_Film_zaner FOREIGn KEY
+    (FilmZaner) REFERENCES zanerFilmu*/
 );
 
+create table zanerFilmu_Film
+(
+nazovZanru varchar2(20) not null,
+FilmID number,
+CONSTRAINT FK_Film_zaner FOREIGn KEY
+    (nazovZanru) REFERENCES zanerFilmu,
+CONSTRAINT FK_Film_ID FOREIGn KEY
+    (FilmID) REFERENCES Film
+);
+
+/*
+alter table zanerFilmu
+ADD constraint FK_zanerFilmuFilm
+    Foreign key (film)
+    REFERENCES Film;*/
 
 create table Projekcia 
 (projekciaID INT GENERATED AS IDENTITY PRIMARY KEY,
@@ -172,10 +188,7 @@ statusZakaznika varchar2(10) not null
 
 --chybajuce väzby co treba urobit alter po tabulkach
 
-alter table zanerFilmu
-ADD constraint FK_zanerFilmuFilm
-    Foreign key (film)
-    REFERENCES Film;
+
     
 alter table Film
 ADD constraint FK_Projekcia_Film
