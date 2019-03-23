@@ -82,6 +82,7 @@ zamestnanci char(11) Not null,
 MultikinoSala number not null,
 constraint FK_zamestMultikina FOREIGN KEY 
     (zamestnanci) REFERENCES Zamestnanec
+    on delete cascade
 );
 
 
@@ -90,7 +91,7 @@ create table zanerFilmu
 (nazov varchar2(20) NOT NULL, 
 popis varchar2(300),
 film number,
-Constraint PK_zanerFilmu PRIMARY KEY (nazov)
+Constraint PK_zanerFilmu PRIMARY KEY (nazov) 
 );
 
 create table Film
@@ -128,6 +129,7 @@ SalaProjekcia number,
 SalaSedadlo number not null,
 constraint FK_SalaProjekcia Foreign key
     (SalaProjekcia) references Projekcia
+    on delete cascade
 );
 
 create table Rezervacia
@@ -145,6 +147,7 @@ SedadloRezervacia number,
 SedadloVstupenka number,
 constraint FK_SedadloRezervacia Foreign key
     (SedadloRezervacia) references Rezervacia
+    on delete cascade
 );
 
 create table Klient
@@ -156,6 +159,7 @@ KlientRezervacia number,
 Constraint status_enum CHECK ( status IN('dieùa','ötudent','dÙchodca','dospel˝','invalid')),
 constraint FK_Klient_Rezervacia Foreign key
     (KlientRezervacia) references Rezervacia
+    on delete cascade
 );
 
 create table Vstupenka
@@ -171,8 +175,7 @@ statusZakaznika varchar2(10) not null
 alter table zanerFilmu
 ADD constraint FK_zanerFilmuFilm
     Foreign key (film)
-    REFERENCES Film
-    on delete cascade;
+    REFERENCES Film;
     
 alter table Film
 ADD constraint FK_Projekcia_Film
@@ -195,8 +198,8 @@ ADD constraint FK_Projekcia_Rezervacia
 alter table Projekcia
 ADD constraint FK_Projekcia_Vstupenka
     Foreign key (ProjekciaVstupenka)
-    REFERENCES Vstupenka
-    on delete cascade;    
+    REFERENCES Vstupenka; 
+    --vstupenky po zmazani projekcie ostanu kvÙli vr·teniu peÚazÌ    
          
 alter table PremietaciaSala
 ADD constraint FK_Sala_Sedadlo
@@ -207,8 +210,25 @@ ADD constraint FK_Sala_Sedadlo
 alter table Sedadlo
 ADD constraint FK_Vstupenka_Sedadlo
     Foreign key (SedadloVstupenka)
-    references Vstupenka
-    on delete cascade;
+    references Vstupenka;
+
+
+----------------------------INSERTION OF THE DATA STARTS HERE-----
+
+-----------------------------------INSERTION ENDS HERE------------
+--UrËenie spravcu databazy 
+GRANT ALL ON Zamestnanec TO xkobyd00;
+GRANT ALL ON Multikino TO xkobyd00;
+GRANT ALL ON Rezervacia TO xkobyd00;
+GRANT ALL ON ZanerFilmu TO xkobyd00;
+GRANT ALL ON Film TO xkobyd00;
+GRANT ALL ON Sedadlo TO xkobyd00;
+GRANT ALL ON Vstupenka TO xkobyd00;
+GRANT ALL ON PremietaciaSala TO xkobyd00;
+GRANT ALL ON Projekcia TO xkobyd00;
+GRANT ALL ON Klient TO xkobyd00;
+
+COMMIT;
  
 /*
 --drop table trzbyFilmu;
