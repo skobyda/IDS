@@ -1,11 +1,10 @@
---DATE,TIME,PK
+--Authors: Simon Kobyda, Michal Zelenak
+-- VUT FIT 2019 IDS
+
+--TO DO
+--TIME,
+
 --pull datas into table
---creating connections and number them
---hotovo Zamestnanec, 
-/*
-drop table multikino;
-drop table Zamestnanec;
-/**/
 
 BEGIN 
     EXECUTE immediate 'DROP TABLE Zamestnanec CASCADE CONSTRAINTS';
@@ -63,31 +62,27 @@ END;
 
 create table Zamestnanec 
 (
-rodne_cislo char(11),
-meno varchar2(120),
-priezvisko varchar2(120),
-Adresa varchar2(80),
+rodne_cislo char(11) primary key not null,
+meno varchar2(120) not null,
+priezvisko varchar2(120) not null,
+Adresa varchar2(80) not null,
 cisloUctu char(24),
 hodinovaMzda number(4,3),
-pozicia varchar2(50),
-Zam varchar2(50),
-Constraint PK_zamestnanec PRIMARY KEY (rodne_cislo),
+pozicia varchar2(50) not null,
 Constraint pozicia_enum CHECK ( pozicia IN('pokladnik','veduci','majitel','vyhodeny'))
 );
 
 
 create table multikino
 (
-nameCin varchar2(50) not null,
-town varchar2(180) NOT NULL, 
-street varchar2(180),
-zamestn char(11),
-Sala number,
-constraint PK_multikino PRIMARY KEY (nameCin),
+nameCin varchar2(50) Primary key not null,
+mesto varchar2(180) NOT NULL, 
+ulica varchar2(180),
+zamestnanci char(11) Not null,
+MultikinoSala number not null,
 constraint FK_zamestMultikina FOREIGN KEY 
-    (zamestn) REFERENCES Zamestnanec
+    (zamestnanci) REFERENCES Zamestnanec
 );
-
 
 
 
@@ -99,18 +94,18 @@ Constraint PK_zanerFilmu PRIMARY KEY (nazov)
 );
 
 create table Film
-(FilmID INT GENERATED AS IDENTITY PRIMARY KEY,
+(FilmID INT GENERATED AS IDENTITY PRIMARY KEY not null,
 nazovFilmu varchar2(20) NOT NULL,
 rok number(4,0),
 klucslova varchar2(200),
 reziser varchar2(70),
 trvanie number(3,1),
 krajinaPovodu varchar2(50),
-vekoveObmedzenie number(2,0),
-zaner varchar2(20),
-projekciaFilmu number,
+vekoveObmedzenie number(2,0) not null,
+FilmZaner varchar2(20),
+FilmProjekcia number,
 CONSTRAINT FK_Film_zaner FOREIGn KEY
-    (zaner) REFERENCES zanerFilmu
+    (FilmZaner) REFERENCES zanerFilmu
 );
 
 
@@ -119,62 +114,59 @@ create table Projekcia
 titulky char(1),
 jazyk varchar2(80),
 datum date,
-d3 char(1),
-FilmProjekcia number,
-Constraint FK_film Foreign key
-    (FilmProjekcia) references Film 
+d3 char(1) not null,
+ProjekciaRezervacia number,
+ProjekciaVstupenka number not null
 );
 --,casZacatia time - mal by stacit date?
 
 create table PremietaciaSala
 (PremietaciaSalaID INT GENERATED AS IDENTITY PRIMARY KEY,
 kapacita number(4,0),
-projektor varchar2(50),
+projektor varchar2(50) not null,
 SalaProjekcia number,
-multikinoSala varchar2(50),
+SalaSedadlo number not null,
 constraint FK_SalaProjekcia Foreign key
-    (SalaProjekcia) references Projekcia,
-constraint FK_SalaMultikino Foreign key
-    (multikinoSala) references Multikino    
+    (SalaProjekcia) references Projekcia
 );
 
 create table Rezervacia
-(RezervaciaID INT GENERATED AS IDENTITY PRIMARY KEY,
-cas Date,
-cena Number(4,3));
+(RezervaciaID INT GENERATED AS IDENTITY PRIMARY KEY not null,
+cas Date not null,
+cena Number(4,3) not null
+);
 
 create table Sedadlo
 (SedadloID INT GENERATED AS IDENTITY PRIMARY KEY,
-sedadlo number(4,0),
-poradie number(4,0),
-obsadenost char(1)
+rad number(4,0) not null,
+poradie number(4,0) not null,
+obsadenost char(1) not null,
+SedadloRezervacia number,
+SedadloVstupenka number,
+constraint FK_SedadloRezervacia Foreign key
+    (SedadloRezervacia) references Rezervacia
 );
 
 create table Klient
-(KlientID INT GENERATED AS IDENTITY PRIMARY KEY,
-Heslo varchar(50),
-vek number(3,0),
-status varchar(10)
+(KlientID varchar2(50) Primary Key not null,
+Heslo varchar2(50) not null,
+vek number(3,0) not null,
+status varchar2(10) not null,
+KlientRezervacia number,
+Constraint status_enum CHECK ( status IN('dieùa','ötudent','dÙchodca','dospel˝','invalid')),
+constraint FK_Klient_Rezervacia Foreign key
+    (KlientRezervacia) references Rezervacia
 );
 
 create table Vstupenka
 (VstupenkaID INT GENERATED AS IDENTITY PRIMARY KEY,
-casPredaja date,
-cena number(4,3),
-statusZakaznika varchar(10)
+casPredaja date not null,
+cena number(4,3) not null,
+statusZakaznika varchar2(10) not null
 );
 
 
 --chybajuce v‰zby co treba urobit alter po tabulkach
-/**
-multikino prevadzkuje
-
-*/
-alter table Zamestnanec 
-ADD constraint FK_nameOfCinema
-    Foreign key (Zam) 
-    REFERENCES Multikino
-    on delete cascade;
 
 alter table zanerFilmu
 ADD constraint FK_zanerFilmuFilm
@@ -184,17 +176,40 @@ ADD constraint FK_zanerFilmuFilm
     
 alter table Film
 ADD constraint FK_Projekcia_Film
-    Foreign key (ProjekciaFilmu)
+    Foreign key (FilmProjekcia)
     REFERENCES Film
     on delete cascade;
 
 alter table Multikino
 ADD constraint FK_Multikino_Sala
-    Foreign key (Sala)
+    Foreign key (MultikinoSala)
     REFERENCES PremietaciaSala
     on delete cascade;
-   
 
+alter table Projekcia
+ADD constraint FK_Projekcia_Rezervacia
+    Foreign key (ProjekciaRezervacia)
+    REFERENCES Projekcia
+    on delete cascade;
+
+alter table Projekcia
+ADD constraint FK_Projekcia_Vstupenka
+    Foreign key (ProjekciaVstupenka)
+    REFERENCES Vstupenka
+    on delete cascade;    
+         
+alter table PremietaciaSala
+ADD constraint FK_Sala_Sedadlo
+    Foreign key (SalaSedadlo)
+    references Sedadlo
+    on delete cascade;
+
+alter table Sedadlo
+ADD constraint FK_Vstupenka_Sedadlo
+    Foreign key (SedadloVstupenka)
+    references Vstupenka
+    on delete cascade;
+ 
 /*
 --drop table trzbyFilmu;
 drop table Vstupenka;
