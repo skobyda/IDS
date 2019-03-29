@@ -62,23 +62,13 @@ BEGIN
 END;
 /
 
-/*
-keywords is table of varchar2(10)
-DECLARE
-    keywords is VARRAY(25) OF VARCHAR2(15);
-CREATE TYPE keywords as VARRAY(25) OF VARCHAR2(15)
---vytvorený typ ... pole k¾úèových slov(max 25) o dlžke max 15 
-*/
-
-
-
 CREATE TABLE multikino
 (
 nameCin VARCHAR2(50) PRIMARY KEY NOT NULL,
 mesto VARCHAR2(180) NOT NULL, 
-ulica VARCHAR2(180),
+ulica VARCHAR2(180)
 --zamestnanci CHAR(11) NOT NULL,
-multikinoSala NUMBER NOT NULL
+--multikinoSala NUMBER NOT NULL
 --CONSTRAINT FKzamestMultikina FOREIGN KEY 
 --    (zamestnanci) REFERENCES zamestnanec
 --    ON DELETE CASCADE
@@ -93,8 +83,8 @@ adresa VARCHAR2(80) NOT NULL,
 cisloUctu CHAR(24),
 hodinovaMzda NUMBER(4,3),
 pozicia VARCHAR2(50) NOT NULL,
+multikinoPraca VARCHAR2(50) NOT NULL,
 CONSTRAINT poziciaEnum CHECK ( pozicia IN('pokladnik','veduci','majitel','vyhodeny')),
-multikinoPraca VARCHAR2(50),
 CONSTRAINT FKzamesMultikina FOREIGN KEY
     (multikinoPraca) REFERENCES multikino
     ON DELETE CASCADE
@@ -108,22 +98,19 @@ CONSTRAINT PKzanerFilmu PRIMARY KEY (nazov)
 );
 
 
-
 CREATE TABLE film
 (filmID INT GENERATED AS IDENTITY PRIMARY KEY NOT NULL,
 nazovFilmu VARCHAR2(20) NOT NULL,
 rok NUMBER(4,0),
-klucSlova varchar2(100),--HERE MISTAKE
+klucSlova VARCHAR(100),--HERE 
 reziser VARCHAR2(70),
 trvanie NUMBER(3,1),
 krajinaPovodu VARCHAR2(50),
 vekoveObmedzenie NUMBER(2,0) NOT NULL
-/*CONSTRAINT FK_Film_zaner FOREIGN KEY
-    (FilmZaner) REFERENCES zanerFilmu*/
 );
 
 CREATE TABLE tableZanerFilm
-(nazovZanru VARCHAR2(20) NOT NULL,
+(nazovZanru VARCHAR2(20),
 filmIdentifikator NUMBER,
 CONSTRAINT FKFilmZaner FOREIGN KEY
     (nazovZanru) REFERENCES zanerFilmu,
@@ -131,33 +118,34 @@ CONSTRAINT FKFilmID FOREIGN KEY
     (filmIdentifikator) REFERENCES film
 );
 
-/*
-ALTER TABLE zanerFilmu
-ADD CONSTRAINT FK_zanerFilmuFilm
-    FOREIGN KEY (film)
-    REFERENCES Film;*/
+CREATE TABLE premietaciaSala
+(premietaciaSalaID INT GENERATED AS IDENTITY PRIMARY KEY,
+kapacita NUMBER(4,0),
+projektor VARCHAR2(50) NOT NULL,
+kino VARCHAR2(50) NOT NULL,
+CONSTRAINT FKkino FOREIGN KEY
+(kino) REFERENCES multikino
+ON DELETE CASCADE
+);
 
 CREATE TABLE projekcia 
 (projekciaID INT GENERATED AS IDENTITY PRIMARY KEY,
 titulky CHAR(2),
 jazyk VARCHAR2(80),
-datum TIMESTAMP,
+datum TIMESTAMP NOT NULL,
 d3 CHAR(1) NOT NULL,
 projekciaFilm NUMBER,
 projekciaSala NUMBER,
-CONSTRAINT FKFilmFromFilm FOREIGN KEY
+CONSTRAINT FKProjekciaFilm FOREIGN KEY
 (projekciaFilm) REFERENCES film
+    ON DELETE CASCADE,
+CONSTRAINT FKSalaFilm FOREIGN KEY
+(projekciaSala) REFERENCES premietaciaSala
+    ON DELETE CASCADE
 );
 --,casZacatia time - mal by stacit DATE?
 
-CREATE TABLE premietaciaSala
-(premietaciaSalaID INT GENERATED AS IDENTITY PRIMARY KEY,
-kapacita NUMBER(4,0),
-projektor VARCHAR2(50) NOT NULL,
-kino VARCHAR2(50),
-CONSTRAINT FKkino FOREIGN KEY
-(kino) REFERENCES multikino
-);
+
 
 
 
@@ -166,7 +154,10 @@ CREATE TABLE sedadlo
 rad NUMBER(4,0) NOT NULL,
 poradie NUMBER(4,0) NOT NULL,
 obsadenost CHAR(1) NOT NULL,
-sedadloRezervacia NUMBER
+sedadloSala NUMBER NOT NULL,
+CONSTRAINT FKSedadloSala FOREIGN KEY
+(sedadloSala) REFERENCES premietaciaSala
+ON DELETE CASCADE
 );
 
 CREATE TABLE klient
@@ -184,7 +175,7 @@ CREATE TABLE rezervacia
 cas DATE NOT NULL,
 cena NUMBER(4,2) NOT NULL,
 rezervProjekcia NUMBER,
-rezervSedadlo number,
+rezervSedadlo NUMBER,
 rezervKlient VARCHAR2(50),
 CONSTRAINT FKRezervaciaProjekcia FOREIGN KEY
     (rezervProjekcia) REFERENCES projekcia
@@ -203,7 +194,7 @@ casPredaja TIMESTAMP NOT NULL,
 cena NUMBER(4,3) NOT NULL,
 statusZakaznika VARCHAR2(10) NOT NULL,
 vstupenkaSedadlo NUMBER,
-vstupenkaProjekcia NUMBER,
+vstupenkaProjekcia NUMBER NOT NULL,
 CONSTRAINT FKVstupenkaSedadlo FOREIGN KEY
     (vstupenkaSedadlo) REFERENCES sedadlo
     ON DELETE CASCADE,
@@ -213,41 +204,13 @@ CONSTRAINT FKVstupenkaProjekcia FOREIGN KEY
 );
 --chybajuce väzby co treba urobit alter po tabulkach
 
-
-/*    
-ALTER TABLE film
-ADD CONSTRAINT FK_Projekcia_Film
-    FOREIGN KEY (filmProjekcia)
-    REFERENCES film
-    ON DELETE CASCADE;
-*/
-
-ALTER TABLE projekcia
-ADD CONSTRAINT FKProjekciaSala
-    FOREIGN KEY (projekciaSala)
-    REFERENCES premietaciaSala
-    ON DELETE CASCADE;
-
-
-ALTER TABLE sedadlo
-ADD CONSTRAINT FKSedadloRezervacia
-    FOREIGN KEY (sedadloRezervacia)
-    REFERENCES rezervacia
-    ON DELETE CASCADE;
-
-
-
-
-    --vstupenky po zmazani projekcie ostanu kvôli vráteniu peoazí    
+    --vstupenky po zmazani projekcie ostanu kvôli vráteniu pe?azí    
          
-
-
-
 
 ----------------------------INSERTION OF THE DATA STARTS HERE-----
 
 -----------------------------------INSERTION ENDS HERE------------
---Ureenie spravcu databazy 
+--Ur?enie spravcu databazy 
 GRANT ALL ON zamestnanec TO xkobyd00;
 GRANT ALL ON multikino TO xkobyd00;
 GRANT ALL ON rezervacia TO xkobyd00;
