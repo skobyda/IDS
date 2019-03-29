@@ -80,7 +80,7 @@ hodinovaMzda NUMBER(4,3),
 pozicia VARCHAR2(50) NOT NULL,
 multikinoPraca VARCHAR2(50) NOT NULL,
 CONSTRAINT poziciaEnum CHECK ( pozicia IN('pokladnik','veduci','majitel','vyhodeny')),
-CONSTRAINT FKzamesMultikina FOREIGN KEY
+CONSTRAINT FKZamesMultikina FOREIGN KEY
     (multikinoPraca) REFERENCES multikino
     ON DELETE CASCADE
 );
@@ -118,7 +118,7 @@ CREATE TABLE premietaciaSala
 kapacita NUMBER(4,0),
 projektor VARCHAR2(50) NOT NULL,
 kino VARCHAR2(50) NOT NULL,
-CONSTRAINT FKkino FOREIGN KEY
+CONSTRAINT FKKino FOREIGN KEY
 (kino) REFERENCES multikino
 ON DELETE CASCADE
 );
