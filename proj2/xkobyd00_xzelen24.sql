@@ -67,11 +67,6 @@ CREATE TABLE multikino
 nameCin VARCHAR2(50) PRIMARY KEY NOT NULL,
 mesto VARCHAR2(180) NOT NULL, 
 ulica VARCHAR2(180)
---zamestnanci CHAR(11) NOT NULL,
---multikinoSala NUMBER NOT NULL
---CONSTRAINT FKzamestMultikina FOREIGN KEY 
---    (zamestnanci) REFERENCES zamestnanec
---    ON DELETE CASCADE
 );
 
 CREATE TABLE zamestnanec 
@@ -143,11 +138,6 @@ CONSTRAINT FKSalaFilm FOREIGN KEY
 (projekciaSala) REFERENCES premietaciaSala
     ON DELETE CASCADE
 );
---,casZacatia time - mal by stacit DATE?
-
-
-
-
 
 CREATE TABLE sedadlo
 (sedadloID INT GENERATED AS IDENTITY PRIMARY KEY,
@@ -202,7 +192,6 @@ CONSTRAINT FKVstupenkaProjekcia FOREIGN KEY
     (vstupenkaProjekcia) REFERENCES projekcia
     ON DELETE CASCADE
 );
---chybajuce väzby co treba urobit alter po tabulkach
 
     --vstupenky po zmazani projekcie ostanu kvôli vráteniu pe?azí    
          
