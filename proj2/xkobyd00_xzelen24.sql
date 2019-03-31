@@ -82,10 +82,7 @@ multikinoPraca VARCHAR2(50) NOT NULL,
 CONSTRAINT poziciaEnum CHECK ( pozicia IN('pokladnik','veduci','majitel','vyhodeny')),
 CONSTRAINT FKZamesMultikina FOREIGN KEY
     (multikinoPraca) REFERENCES multikino
-    ON DELETE CASCADE,
-CONSTRAINT CHECK_hodinovaMzda CHECK (hodinovaMzda>=0)
---check rodne cislo
---check cisloUctu
+    ON DELETE CASCADE
 );
 
 CREATE TABLE zanerFilmu
@@ -100,18 +97,12 @@ CREATE TABLE film
 (filmID INT GENERATED AS IDENTITY PRIMARY KEY NOT NULL,
 nazovFilmu VARCHAR2(20) NOT NULL,
 rok NUMBER(4,0),
-klucSlova VARCHAR2(300),--HERE 
+klucSlova VARCHAR(100),--HERE 
 reziser VARCHAR2(70),
 trvanie NUMBER(3,1),
 krajinaPovodu VARCHAR2(50),
-vekoveObmedzenie NUMBER(2,0) NOT NULL,
-CONSTRAINT CHECK_rokDown CHECK (rok>=1850),
-CONSTRAINT CHECK_rokUp CHECK (rok<3000),
-CONSTRAINT CHECK_trvanie CHECK (trvanie>=0),
-CONSTRAINT CHECK_vekObmedzUp CHECK (vekoveObmedzenie>=4),
-CONSTRAINT CHECK_vekObmedzDown CHECK (vekoveObmedzenie<=60)
+vekoveObmedzenie NUMBER(2,0) NOT NULL
 );
-
 
 CREATE TABLE tableZanerFilm
 (nazovZanru VARCHAR2(20),
@@ -129,8 +120,7 @@ projektor VARCHAR2(50) NOT NULL,
 kino VARCHAR2(50) NOT NULL,
 CONSTRAINT FKKino FOREIGN KEY
 (kino) REFERENCES multikino
-ON DELETE CASCADE,
-CONSTRAINT CHECK_kapacita CHECK (kapacita>0)
+ON DELETE CASCADE
 );
 
 CREATE TABLE projekcia 
@@ -157,9 +147,7 @@ obsadenost CHAR(1) NOT NULL,
 sedadloSala NUMBER NOT NULL,
 CONSTRAINT FKSedadloSala FOREIGN KEY
 (sedadloSala) REFERENCES premietaciaSala
-ON DELETE CASCADE,
-CONSTRAINT CHECK_poradie CHECK (poradie>0),
-CONSTRAINT CHECK_rad CHECK (rad>0)
+ON DELETE CASCADE
 );
 
 CREATE TABLE klient
@@ -167,8 +155,7 @@ CREATE TABLE klient
 heslo VARCHAR2(50) NOT NULL,
 vek NUMBER(3,0) NOT NULL,
 status VARCHAR2(10) NOT NULL,
-CONSTRAINT statusEnum CHECK ( status IN('die?a','študent','dôchodca','dospelý','invalid')),
-CONSTRAINT CHECK_vek CHECK (vek>0)
+CONSTRAINT statusEnum CHECK ( status IN('die?a','?tudent','d?chodca','dospel?','invalid'))
 );
 
 
@@ -188,8 +175,7 @@ CONSTRAINT FKRezervaciaSedadlo FOREIGN KEY
     ON DELETE CASCADE,
 CONSTRAINT FKRezervaciaKlient FOREIGN KEY
     (rezervKlient) REFERENCES klient
-    ON DELETE CASCADE,
-CONSTRAINT CHECK_cena CHECK (cena>=0)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE vstupenka
@@ -204,11 +190,10 @@ CONSTRAINT FKVstupenkaSedadlo FOREIGN KEY
     ON DELETE CASCADE,
 CONSTRAINT FKVstupenkaProjekcia FOREIGN KEY
     (vstupenkaProjekcia) REFERENCES projekcia
-    ON DELETE CASCADE,
-CONSTRAINT CHECK_cenaVstupenka CHECK (cena>=0)
+    ON DELETE CASCADE
 );
 
-    --vstupenky po zmazani projekcie ostanu kvôli vráteniu pe?azí    
+    --vstupenky po zmazani projekcie ostanu kv?li vr?teniu pe?az?    
          
 
 ----------------------------INSERTION OF THE DATA STARTS HERE-----
