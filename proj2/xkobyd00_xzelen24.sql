@@ -1,9 +1,6 @@
 --Authors: Simon Kobyda, Michal Zelenak
 -- VUT FIT 2019 IDS
 
---TO DO
-
-
 --pull datas into table
 
 BEGIN 
@@ -155,14 +152,14 @@ CREATE TABLE klient
 heslo VARCHAR2(50) NOT NULL,
 vek NUMBER(3,0) NOT NULL,
 status VARCHAR2(10) NOT NULL,
-CONSTRAINT statusEnum CHECK ( status IN('die?a','študent','dôchodca','dospelý','invalid'))
+CONSTRAINT statusEnum CHECK ( status IN('dieta','student','dochodca','dospely','invalid'))
 );
 
 
 
 CREATE TABLE rezervacia
 (rezervaciaID INT GENERATED AS IDENTITY PRIMARY KEY NOT NULL,
-cas DATE NOT NULL,
+cas TIMESTAMP NOT NULL,
 cena NUMBER(4,2) NOT NULL,
 rezervProjekcia NUMBER,
 rezervSedadlo NUMBER,
@@ -193,13 +190,42 @@ CONSTRAINT FKVstupenkaProjekcia FOREIGN KEY
     ON DELETE CASCADE
 );
 
-    --vstupenky po zmazani projekcie ostanu kvôli vráteniu pe?azí    
+    --vstupenky po zmazani projekcie ostanu kvoli vrateniu penaz?    
          
 
 ----------------------------INSERTION OF THE DATA STARTS HERE-----
+INSERT INTO multikino (nameCin, mesto, ulica)
+VALUES ('LuxCinematic', 'Brno', 'Metodejova');
+
+INSERT INTO zamestnanec  (rodneCislo, meno, priezvisko, adresa, cisloUctu, hodinovaMzda, pozicia, multikinoPraca)
+VALUES ('980604/6825', 'Andrej', 'Kristofan', 'Matice Slovinskej 1225/2 Brno', 'SK8975000000000012345671', 3.50, 'pokladnik', 'LuxCinematic');
+
+INSERT INTO zanerFilmu  (nazov, popis)
+VALUES ('thriller', 'Zaner, ktory ma u divaka vyvola silne napatie a emocie. Pozostava z rychleho sledu udalosti a castej akcie');
+
+INSERT INTO film (nazovFilmu, rok, klucSlova, reziser, trvanie, krajinaPovodu, vekoveObmedzenie)
+VALUES ('Mission: Impossible', 2018, 'action, hollywood, tom cruise', 'Christopher McQuarrie', 14, 'USA', 16);
+
+INSERT INTO premietaciaSala (kapacita, projektor, kino)
+VALUES (272, 'Benq W11000H', 'LuxCinematic');
+
+INSERT INTO projekcia (titulky, jazyk, datum, d3, projekciaFilm, projekciaSala)
+VALUES ('CZ', 'anglicky', to_timestamp('2019-11-24:20:45:00', 'YYYY-MM-DD:HH24:MI:SS'), 'y', TODO, TODO);
+
+INSERT INTO sedadlo (rad, poradie, obsadenost, sedadloSala)
+VALUES (5, 22, 'n', TODO);
+
+INSERT INTO klient (klientID, heslo, vek, status)
+VALUES (5887, 'fakepassword', 35, 'invalid');
+
+INSERT INTO rezervacia (cas, cena, rezervProjekcia, rezervSedadlo, rezervKlient)
+VALUES (to_timestamp('2019-11-21:09:22:43', 'YYYY-MM-DD:HH24:MI:SS'), 77.99, TODO, TODO, 5887);
+
+INSERT INTO vstupenka (casPredaja, cena, statusZakaznika, vstupenkaSedadlo, vstupenkaProjekcia)
+VALUES (to_timestamp('2019-11-24:20:32:05', 'YYYY-MM-DD:HH24:MI:SS'), 77.999, 'invalid', TODO, TODO);
 
 -----------------------------------INSERTION ENDS HERE------------
---Ur?enie spravcu databazy 
+--Urcenie spravcu databazy 
 GRANT ALL ON zamestnanec TO xkobyd00;
 GRANT ALL ON multikino TO xkobyd00;
 GRANT ALL ON rezervacia TO xkobyd00;
