@@ -3,57 +3,57 @@
 
 --pull datas into table
 
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE Zamestnanec CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE ZanerFilmu CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE Film CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE Projekcia CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE PremietaciaSala CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE Rezervacia CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE Sedadlo CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE Klient CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE tableZanerFilm CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE Vstupenka CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
 /
-BEGIN 
+BEGIN
     EXECUTE immediate 'DROP TABLE Multikino CASCADE CONSTRAINTS';
     EXCEPTION WHEN others THEN NULL;
 END;
@@ -62,11 +62,11 @@ END;
 CREATE TABLE multikino
 (
 nameCin VARCHAR2(50) PRIMARY KEY NOT NULL,
-mesto VARCHAR2(180) NOT NULL, 
+mesto VARCHAR2(180) NOT NULL,
 ulica VARCHAR2(180)
 );
 
-CREATE TABLE zamestnanec 
+CREATE TABLE zamestnanec
 (
 rodneCislo CHAR(11) PRIMARY KEY NOT NULL,
 meno VARCHAR2(120) NOT NULL,
@@ -83,10 +83,10 @@ CONSTRAINT FKZamesMultikina FOREIGN KEY
 );
 
 CREATE TABLE zanerFilmu
-(nazov VARCHAR2(20) NOT NULL, 
+(nazov VARCHAR2(20) NOT NULL,
 popis VARCHAR2(300),
 --film NUMBER,
-CONSTRAINT PKzanerFilmu PRIMARY KEY (nazov) 
+CONSTRAINT PKzanerFilmu PRIMARY KEY (nazov)
 );
 
 
@@ -94,7 +94,7 @@ CREATE TABLE film
 (filmID INT GENERATED AS IDENTITY PRIMARY KEY NOT NULL,
 nazovFilmu VARCHAR2(20) NOT NULL,
 rok NUMBER(4,0),
-klucSlova VARCHAR(100),--HERE 
+klucSlova VARCHAR(100),--HERE
 reziser VARCHAR2(70),
 trvanie NUMBER(3,1),
 krajinaPovodu VARCHAR2(50),
@@ -120,7 +120,7 @@ CONSTRAINT FKKino FOREIGN KEY
 ON DELETE CASCADE
 );
 
-CREATE TABLE projekcia 
+CREATE TABLE projekcia
 (projekciaID INT GENERATED AS IDENTITY PRIMARY KEY,
 titulky CHAR(2),
 jazyk VARCHAR2(80),
@@ -190,8 +190,8 @@ CONSTRAINT FKVstupenkaProjekcia FOREIGN KEY
     ON DELETE CASCADE
 );
 
-    --vstupenky po zmazani projekcie ostanu kvoli vrateniu penaz?    
-         
+    --vstupenky po zmazani projekcie ostanu kvoli vrateniu penazi
+
 
 ----------------------------INSERTION OF THE DATA STARTS HERE-----
 INSERT INTO multikino (nameCin, mesto, ulica)
@@ -225,7 +225,7 @@ INSERT INTO vstupenka (casPredaja, cena, statusZakaznika, vstupenkaSedadlo, vstu
 VALUES (to_timestamp('2019-11-24:20:32:05', 'YYYY-MM-DD:HH24:MI:SS'), 77.999, 'invalid', TODO, TODO);
 
 -----------------------------------INSERTION ENDS HERE------------
---Urcenie spravcu databazy 
+--Urcenie spravcu databazy
 GRANT ALL ON zamestnanec TO xkobyd00;
 GRANT ALL ON multikino TO xkobyd00;
 GRANT ALL ON rezervacia TO xkobyd00;
@@ -238,7 +238,7 @@ GRANT ALL ON projekcia TO xkobyd00;
 GRANT ALL ON klient TO xkobyd00;
 
 COMMIT;
- 
+
 /*
 --drop table trzbyFilmu;
 drop table Vstupenka;
