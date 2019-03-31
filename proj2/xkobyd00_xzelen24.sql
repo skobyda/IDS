@@ -100,7 +100,7 @@ CREATE TABLE film
 (filmID INT GENERATED AS IDENTITY PRIMARY KEY NOT NULL,
 nazovFilmu VARCHAR2(20) NOT NULL,
 rok NUMBER(4,0),
-klucSlova NUMBER,--HERE 
+klucSlova VARCHAR2(300),--HERE 
 reziser VARCHAR2(70),
 trvanie NUMBER(3,1),
 krajinaPovodu VARCHAR2(50),
@@ -112,11 +112,6 @@ CONSTRAINT CHECK_vekObmedzUp CHECK (vekoveObmedzenie>=4),
 CONSTRAINT CHECK_vekObmedzDown CHECK (vekoveObmedzenie<=60)
 );
 
---HERE DO NOT KNOW
-CREATE TABLE klucSlova
-(
-klucSlovo varchar(25)
-);
 
 CREATE TABLE tableZanerFilm
 (nazovZanru VARCHAR2(20),
