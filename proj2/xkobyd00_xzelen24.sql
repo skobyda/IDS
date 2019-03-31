@@ -155,7 +155,7 @@ CREATE TABLE klient
 heslo VARCHAR2(50) NOT NULL,
 vek NUMBER(3,0) NOT NULL,
 status VARCHAR2(10) NOT NULL,
-CONSTRAINT statusEnum CHECK ( status IN('die?a','?tudent','d?chodca','dospel?','invalid'))
+CONSTRAINT statusEnum CHECK ( status IN('die?a','študent','dôchodca','dospelý','invalid'))
 );
 
 
@@ -193,7 +193,7 @@ CONSTRAINT FKVstupenkaProjekcia FOREIGN KEY
     ON DELETE CASCADE
 );
 
-    --vstupenky po zmazani projekcie ostanu kv?li vr?teniu pe?az?    
+    --vstupenky po zmazani projekcie ostanu kvôli vráteniu pe?azí    
          
 
 ----------------------------INSERTION OF THE DATA STARTS HERE-----
